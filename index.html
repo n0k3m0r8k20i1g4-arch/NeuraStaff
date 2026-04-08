@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>高性能AIエージェントオフィス</title>
+<style>
+body{margin:0;font-family:sans-serif;display:flex;flex-direction:column;height:100vh;}
+header{background:#111;color:#fff;padding:10px;display:flex;justify-content:space-between;align-items:center;}
+.menu-btn{font-size:1.5em;cursor:pointer;}
+nav{display:none;flex-direction:column;background:#222;color:#fff;position:absolute;top:50px;width:200px;z-index:100;}
+nav a{padding:10px;text-decoration:none;color:#fff;}
+nav.show{display:flex;}
+main{flex:1;padding:10px;overflow:auto;background:#f0f0f0;}
+.chat-box{border:1px solid #ccc;padding:10px;height:300px;overflow-y:auto;background:#fff;margin-bottom:10px;}
+input,button,select{padding:10px;margin:5px;}
+.agent-select, .performance-select{margin-bottom:10px;}
+</style>
+</head>
+<body>
+<header>
+  <div>高性能AIエージェントオフィス</div>
+  <div class="menu-btn">&#9776;</div>
+</header>
+<nav id="nav">
+  <a href="#" onclick="selectAgent('教育')">教育</a>
+  <a href="#" onclick="selectAgent('実行')">実行</a>
+  <a href="#" onclick="selectAgent('データ管理')">データ管理</a>
+  <a href="#" onclick="selectAgent('監視')">監視</a>
+  <a href="#" onclick="selectAgent('AI構築')">AI構築</a>
+  <a href="#" onclick="selectAgent('活用')">活用</a>
+  <a href="#" onclick="selectAgent('チャット')">チャット</a>
+</nav>
+<main>
+  <div class="agent-select">
+    <label>エージェント選択:</label>
+    <select id="agentSelect">
+      <option value="教育">教育</option>
+      <option value="実行">実行</option>
+      <option value="データ管理">データ管理</option>
+      <option value="監視">監視</option>
+      <option value="AI構築">AI構築</option>
+      <option value="活用">活用</option>
+      <option value="チャット">チャット</option>
+    </select>
+    <label>性能選択:</label>
+    <select id="perfSelect">
+      <option value="文章生成">文章生成</option>
+      <option value="文章要約">文章要約</option>
+      <option value="コード生成">コード生成</option>
+      <option value="コード変換">コード変換</option>
+      <option value="HTML">HTML操作</option>
+      <option value="CSS">CSS操作</option>
+      <option value="JS">JS操作</option>
+      <option value="画像生成">画像生成</option>
+      <option value="動画生成">動画生成</option>
+      <option value="音声生成">音声生成</option>
+      <option value="文字起こし">文字起こし</option>
+      <option value="データ分析">データ分析</option>
+      <option value="Base64変換">Base64変換</option>
+      <option value="API操作">API操作</option>
+      <option value="検索">検索</option>
+      <option value="台本作成">台本作成</option>
+      <option value="スライド作成">スライド作成</option>
+      <option value="ゲーム作成">ゲーム作成</option>
+      <option value="Webアプリ生成">Webアプリ生成</option>
+      <option value="バズ分析">バズ分析</option>
+      <option value="テンプレート生成">テンプレート生成</option>
+      <option value="ワークフロー">ワークフロー管理</option>
+      <option value="改善提案">改善提案</option>
+      <option value="監視">監視</option>
+      <option value="教育">教育</option>
+      <option value="実行">実行</option>
+      <option value="活用">活用</option>
+      <option value="チャット">チャット</option>
+      <option value="データ管理">データ管理</option>
+    </select>
+  </div>
+  <div class="chat-box" id="chatBox"></div>
+  <input type="text" id="userInput" placeholder="入力..." />
+  <button onclick="sendMessage()">送信</button>
+</main>
+
+<script>
+// メニュー
+const menuBtn = document.querySelector('.menu-btn');
+const nav = document.getElementById('nav');
+menuBtn.addEventListener('click',()=>nav.classList.toggle('show'));
+
+// チャット & AI操作
+function appendChat(msg){const box=document.getElementById('chatBox');box.innerHTML+=msg+'<br>';box.scrollTop=box.scrollHeight;}
+async function sendMessage(){
+  const agent=document.getElementById('agentSelect').value;
+  const perf=document.getElementById('perfSelect').value;
+  const input=document.getElementById('userInput');
+  if(!input.value) return;
+  appendChat(`🧑: ${input.value}`);
+  const res=await fetch('/process',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({agent:agent,performance:perf,text:input.value})
+  });
+  const data=await res.json();
+  appendChat(`🤖 [${perf}]: ${data.reply}`);
+  input.value='';
+}
+</script>
+</body>
+</html>
